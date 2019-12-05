@@ -12,18 +12,18 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/fab_margin"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        android:text="@string/chooseTopic"
+        app:layout_constraintBottom_toTopOf="@+id/chooseTopicGroup"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
     <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/chooseTopicGroup"
+        android:layout_width="420dp"
+        android:layout_height="129dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:layout_weight="5"
@@ -36,36 +36,36 @@
         app:layout_constraintVertical_bias="0.379">
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/radButTopic1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="RadioButton" />
+            android:text="@string/RadioButtonTopicChoose1" />
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/radButTopic2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="RadioButton" />
+            android:text="@string/RadioButtonTopicChoose2" />
 
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/radButTopic3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="RadioButton" />
+            android:text="@string/RadioButtonTopicChoose3" />
 
         <RadioButton
-            android:id="@+id/radioButton5"
+            android:id="@+id/radButTopic4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="RadioButton" />
+            android:text="@string/RadioButtonTopicChoose4" />
     </RadioGroup>
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonGoToGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -75,14 +75,14 @@
         android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="Button"
+        android:text="@string/start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/chooseTopicGroup" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/buttonGoToStatistic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -92,11 +92,11 @@
         android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="Button"
+        android:text="@string/Statistic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGoToGame"
         app:layout_constraintVertical_bias="0.060000002" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
