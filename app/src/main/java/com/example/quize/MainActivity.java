@@ -15,7 +15,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private final int ID = 2131230889;
+    //private final int ID = 2131230889;
+    private final String KEY = "Topic";
     private int topic;
     private Button buttonGoToQuiz;
     private Button buttonGoToStatistic;
@@ -37,21 +38,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /***/
         buttonGoToQuiz.setOnClickListener(this);
         buttonGoToStatistic.setOnClickListener(this);
-
     }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonGoToGame:
-                topic= radioGroupChooseTopic.getCheckedRadioButtonId()-ID;
+                topic = radioGroupChooseTopic.getCheckedRadioButtonId();
 
                 Intent intent = new Intent(this, QuizActivity.class);
-                intent.putExtra("Topic", topic);
+                intent.putExtra(KEY, topic);
                 startActivity(intent);
 
                 break;
             case R.id.buttonGoToStatistic:
-
                 break;
         }
     }
