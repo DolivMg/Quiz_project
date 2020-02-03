@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
@@ -43,8 +44,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonGoToGame:
-                topic = radioGroupChooseTopic.getCheckedRadioButtonId();
+                /**choose topic*/
+                switch(radioGroupChooseTopic.getCheckedRadioButtonId())
+                {
+                    case  R.id.radButTopic1:
+                        topic=1;
+                        break;
+                    case  R.id.radButTopic2:
+                        topic=2;
+                        break;
+                    case  R.id.radButTopic3:
+                        topic=3;
+                        break;
+                    case  R.id.radButTopic4:
+                        topic=4;
+                        break;
 
+                }
+                Log.d("vasa", topic+"");
                 Intent intent = new Intent(this, QuizActivity.class);
                 intent.putExtra(KEY, topic);
                 startActivity(intent);
