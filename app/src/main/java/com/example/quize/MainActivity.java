@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
                 Log.d("vasa", topic+"");
+
                 Intent intent = new Intent(this, QuizActivity.class);
                 intent.putExtra(KEY, topic);
                 startActivity(intent);

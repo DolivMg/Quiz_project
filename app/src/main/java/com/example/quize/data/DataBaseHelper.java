@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
-    private static String DB_PATH = "";
+    private static String DB_PATH = "/data/user/0/com.example.quize/databases/";
     private static String DB_NAME = "quiz";
     private SQLiteDatabase myDataBase;
     private final Context mContext;
@@ -26,14 +26,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public DataBaseHelper(Context context,int chooseTopic) {
         super(context, DB_NAME, null, 1);
-        DB_PATH =context.getDatabasePath(DB_NAME).getPath();
-        Log.d("vasa", context.getDatabasePath(DB_NAME).exists()+"  tut");
+        //DB_PATH =context.getDatabasePath(DB_NAME).getPath();
+        Log.d("vasa", context.getFilesDir().getPath()+"  tut");
         this.chooseTopic=chooseTopic;
-        /*if (android.os.Build.VERSION.SDK_INT >= 19)
-            DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
-        else
-            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";*/
+
         this.mContext = context;
+
     }
 
     public void createDataBase() throws IOException {
@@ -41,11 +39,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         if(dbExist){
             //ничего не делать - база уже есть
+            Log.d("vasa", "base yes");
         }else{
             //вызывая этот метод создаем пустую базу, позже она будет перезаписана
             this.getReadableDatabase();
 
             try {
+                Log.d("vasa", "copy");
                 copyDataBase();
             } catch (IOException e) {
                 throw new Error("Error copying database");
@@ -55,11 +55,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 //------------------------------------------
     private boolean checkDataBase(){
         SQLiteDatabase checkDB = null;
-
+        Log.d("vasa", "try to find");
         try{
-            String myPath = DB_PATH + DB_NAME;
+            String myPath = mContext.getDatabasePath(DB_NAME).getPath() ;
+            Log.d("vasa", "exist");
             checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
         }catch(SQLiteException e){
+            Log.d("vasa", "NoExist");
             //база еще не существует
         }
         if(checkDB != null){
@@ -71,10 +73,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //---------------------------------------
     private void copyDataBase() throws IOException{
         //Открываем локальную БД как входящий поток
-        InputStream myInput = mContext.getAssets().open(DB_NAME);
+        Log.d("vasa", "load");
+        InputStream myInput = mContext.getAssets().open("databases/"+DB_NAME);
 
+       // Log.d("vasa", mContext.getAssets().);
         //Путь ко вновь созданной БД
-        String outFileName = DB_PATH + DB_NAME;
+        String outFileName = mContext.getDatabasePath(DB_NAME).getPath();
 
         //Открываем пустую базу данных как исходящий поток
         OutputStream myOutput = new FileOutputStream(outFileName);
@@ -94,22 +98,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
     public SQLiteDatabase openDataBase() throws SQLException {
-        //открываем БД
-        String myPath = DB_PATH;//+DB_NAME; //context.getDatabasePath(DB_NAME).getPath() ;
+
+        String myPath = mContext.getDatabasePath(DB_NAME).getPath();;//+DB_NAME; //context.getDatabasePath(DB_NAME).getPath() ;
         Log.d("vasa", myPath);
 
         myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
         return myDataBase;
     }
 
-    @Override
-    public synchronized void close() {
-        if(myDataBase != null)
-            myDataBase.close();
-        super.close();
-    }
-    private void loadElements() {
-        /**My db*/
+
+    public void loadElements() {
+
         SQLiteDatabase db = null;
         /**Element db*/
         ElementQuiz elem;
@@ -139,23 +138,29 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         if( db.isOpen())
             Log.d("vasa","open" );else Log.d("vasa","close" );
-        Log.d("vasa",db.getMaximumSize()+"" );
+        Log.d("vasa",db.getPath()+"  path" );
 
         /**it begin to read*/
         Cursor cursor = db.rawQuery(query , null);
         try {
             /**read*/
+            Log.d("vasa",query );
+            cursor.moveToFirst();
+            //cursor.getColumnCount();
+            Log.d("vasa",cursor.getColumnCount()+"  column" );
+            int id, type,topic;
             while (cursor.moveToNext()) {
 
-                int id = cursor.getInt(cursor
+                 id = cursor.getInt(cursor
                         .getColumnIndex(QuizContract.QuestionsEntry._ID));
+                Log.d("vasa", id+"  load");
                 String question = cursor.getString(cursor
                         .getColumnIndex(QuizContract.QuestionsEntry.COLUMN_QUESTION));
-                int type = cursor.getInt(cursor
+                 type = cursor.getInt(cursor
                         .getColumnIndex(QuizContract.QuestionsEntry.COLUMN_TYPE));
-                int topic = cursor.getInt(cursor
+                 topic = cursor.getInt(cursor
                         .getColumnIndex(QuizContract.QuestionsEntry.COLUMN_TOPIC));
-                /**Add element to quiz*/
+                /**Add element to */
                 elem = new ElementQuiz(id, type, topic, question);
                 quizList.add(elem);
             }
@@ -176,7 +181,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     + QuizContract.AnswersEntry.TABLE_NAME
                     + " a INNER JOIN "
                     + QuizContract.QuestionsEntry.TABLE_NAME
-                    + "b ON a."+ QuizContract.AnswersEntry.Q_ID
+                    + " b ON a."+ QuizContract.AnswersEntry.Q_ID
                     + " = "
                     + "b."+QuizContract.QuestionsEntry._ID+" ;";
 
@@ -184,12 +189,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             try {
                 /**read*/
                 while (cursor.moveToNext()) {
+
                     Boolean isVald = cursor.getInt(cursor
                             .getColumnIndex(QuizContract.AnswersEntry.COLUMN_IS_VALID)) == 1 ? true : false;
 
                     String answer =cursor.getString(cursor
-                            .getColumnIndex(QuizContract.AnswersEntry.COLUMN_IS_VALID));
-
+                            .getColumnIndex(QuizContract.AnswersEntry.COLUMN_ANSWER));
+                    Log.d("vasa", answer+"  load");
                     quizList.get(i).answerList.add( new Answers(isVald, answer ));
                 }
             } finally {
@@ -204,9 +210,19 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return quizList;
     }
 
+
+
+
+    @Override
+    public synchronized void close() {
+        if(myDataBase != null)
+            myDataBase.close();
+        super.close();
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        loadElements();
+
     }
 
     @Override

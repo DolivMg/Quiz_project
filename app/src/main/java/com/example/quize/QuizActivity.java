@@ -23,6 +23,7 @@ import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -34,7 +35,7 @@ import java.util.Random;
 
 public class QuizActivity extends AppCompatActivity implements View.OnClickListener{
     private DataBaseHelper dataBase;
-    private ArrayList<ElementQuiz> quizList = new ArrayList<ElementQuiz>();
+    private ArrayList<ElementQuiz> quizList; //= new ArrayList<ElementQuiz>();
 
     private Button buttonNext;
 
@@ -43,9 +44,10 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private int chooseTopic;
     private ElementQuiz chooseElement;
     private int chooseType;
+    private int max;
 
     private int trueAnswersQuiz=0;
-    private int trueFalseQuiz=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,10 +61,19 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
 
         dataBase = new DataBaseHelper(this,chooseTopic);
+        try {
+            dataBase.createDataBase();
+        } catch (IOException ioe) {
+            throw new Error("Unable to create database");
+        }
+
+        dataBase.loadElements();
         quizList=dataBase.getQuizList();
 
         buttonNext = (Button) findViewById(R.id.buttonNext);
 
+        onDisplayQuestion();
+        max=quizList.size();
         buttonNext.setOnClickListener(this);
     }
 
@@ -82,21 +93,35 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                         getAnswerRadioGrup();
                         break;
                     case 4:
-                        RadioGroup answerGrup4  = (RadioGroup)  findViewById(R.id.answerCheckBox);
-                        answerGrup4.setVisibility(View.VISIBLE);
+                        getAnswerCheckGrup();
                         break;
                 }
-
-                break;
         }
+        if (checkFinalGame())
+        {
+            Intent intent = new Intent(this, ResultsActivity.class);
+            intent.putExtra("Answers", trueAnswersQuiz);
+            intent.putExtra("MaxQuestions", max);
+            startActivity(intent);
+        }
+            else
+        onDisplayQuestion();
+    }
+
+    private boolean checkFinalGame()
+    {
+        quizList.remove(chooseElement);
+        return (quizList.size()==0);
     }
 
     private ElementQuiz choosQuestion()
     {
         Random random = new Random();
+        Log.d("vasa", quizList.size()+"");
         int chooseElement = random.nextInt(quizList.size());
         return quizList.get(chooseElement);
     }
+
     private void onDisplayQuestion()
     {
         chooseElement = choosQuestion();
@@ -104,22 +129,19 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         TextView textQuestion  = (TextView)  findViewById(R.id.textViewQuestions);
         textQuestion.setText(chooseElement.question);
 
-
                 switch(chooseElement.type)
                 {
                     case 1:
-                        // RadioButton r1 = (RadioButton)  findViewById(R.id.answerTrueFalseGroup);
                         setAnswerTrueFalse();
                         break;
                     case 2:
                         setAnswerString();
                         break;
                     case 3:
-                        setAnswerRadioGrup(chooseElement.answerList);
+                        setAnswerRadioGrup();
                         break;
                     case 4:
-                        RadioGroup answerGrup4  = (RadioGroup)  findViewById(R.id.answerCheckBox);
-                        answerGrup4.setVisibility(View.VISIBLE);
+                        setAnswerCheckGrup();
                         break;
                 }
     }
@@ -136,7 +158,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         answerGrup.setVisibility(View.VISIBLE);
     }
 
-    private void setAnswerRadioGrup(ArrayList<Answers> answers)
+    private void setAnswerRadioGrup()
     {
         RadioGroup answerGrup  = (RadioGroup)  findViewById(R.id.answerRadioGroup);
         answerGrup.setVisibility(View.VISIBLE);
@@ -151,33 +173,106 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         r3.setText(chooseElement.answerList.get(2).answer);
         r4.setText(chooseElement.answerList.get(3).answer);
     }
+
+    private void setAnswerCheckGrup()
+    {
+        RadioGroup answerGrup  = (RadioGroup)  findViewById(R.id.answerCheckBox);
+        answerGrup.setVisibility(View.VISIBLE);
+
+        CheckBox r1 = (CheckBox) findViewById(R.id.checkButton1);
+        CheckBox r2 = (CheckBox) findViewById(R.id.checkButton2);
+        CheckBox r3 = (CheckBox) findViewById(R.id.checkButton3);
+        CheckBox r4 = (CheckBox) findViewById(R.id.checkButton4);
+
+        r1.setText(chooseElement.answerList.get(0).answer);
+        r2.setText(chooseElement.answerList.get(1).answer);
+        r3.setText(chooseElement.answerList.get(2).answer);
+        r4.setText(chooseElement.answerList.get(3).answer);
+    }
+
+
+
 private void getAnswerTrueFalse()
 {
     RadioGroup answerGrup  = (RadioGroup)  findViewById(R.id.answerTrueFalseGroup);
-    boolean check = (1 == -1*answerGrup.getCheckedRadioButtonId()+answerGrup.getCheckedRadioButtonId()+2);
+
+    boolean check =false;
+    switch(answerGrup.getCheckedRadioButtonId())
+    {
+        case  R.id.radioButtonFalse:
+            check =false;
+            break;
+        case  R.id.radioButtonTrue:
+            check =true;
+            break;
+    }
 
     if (chooseElement.answerList.get(0).isValid == check)
         trueAnswersQuiz++;
-        else trueFalseQuiz++;
-
+    answerGrup.setVisibility(View.INVISIBLE);
 }
 
     private void getAnswerString()
     {
+
         EditText answerGrup  = (EditText)  findViewById(R.id.answerString);
         boolean check =  ( answerGrup.getText().equals(chooseElement.answerList.get(0).answer));
         if (chooseElement.answerList.get(0).isValid == check)
             trueAnswersQuiz++;
-        else trueFalseQuiz++;
+        answerGrup.setVisibility(View.INVISIBLE);
     }
+
     private void getAnswerRadioGrup()
     {
         RadioGroup answerGrup  = (RadioGroup)  findViewById(R.id.answerRadioGroup);
-        boolean check = (1 == -1*answerGrup.getCheckedRadioButtonId()+answerGrup.getCheckedRadioButtonId()+4);
+        int check =0;
 
-        if (true == check)
+        RadioButton r1 = (RadioButton) findViewById(R.id.radioButtonAnsw1);
+        RadioButton r2 = (RadioButton) findViewById(R.id.radioButtonAnsw2);
+        RadioButton r3 = (RadioButton) findViewById(R.id.radioButtonAnsw3);
+        RadioButton r4 = (RadioButton) findViewById(R.id.radioButtonAnsw4);
+
+        switch(answerGrup.getCheckedRadioButtonId())
+        {
+            case  R.id.radioButtonAnsw1:
+                check =0;
+                break;
+            case  R.id.radioButtonAnsw2:
+                check =1;
+                break;
+            case  R.id.radioButtonAnsw3:
+                check =2;
+                break;
+            case  R.id.radioButtonAnsw4:
+                check =3;
+                break;
+        }
+        answerGrup.setVisibility(View.INVISIBLE);
+        if (chooseElement.answerList.get(check).isValid == true)
             trueAnswersQuiz++;
-        else trueFalseQuiz++;
+    }
+
+    private void getAnswerCheckGrup()
+    {
+        RadioGroup answerGrup  = (RadioGroup)  findViewById(R.id.answerRadioGroup);
+        int check =0;
+
+        CheckBox r1 = (CheckBox) findViewById(R.id.checkButton1);
+        CheckBox r2 = (CheckBox) findViewById(R.id.checkButton2);
+        CheckBox r3 = (CheckBox) findViewById(R.id.checkButton3);
+        CheckBox r4 = (CheckBox) findViewById(R.id.checkButton4);
+
+
+
+        answerGrup.setVisibility(View.INVISIBLE);
+        if (chooseElement.answerList.get(0).isValid == r1.callOnClick()==true)
+            trueAnswersQuiz++;
+        if (chooseElement.answerList.get(1).isValid == r2.callOnClick()==true)
+            trueAnswersQuiz++;
+        if (chooseElement.answerList.get(2).isValid == r3.callOnClick()==true)
+            trueAnswersQuiz++;
+        if (chooseElement.answerList.get(3).isValid == r4.callOnClick()==true)
+            trueAnswersQuiz++;
     }
 
 
