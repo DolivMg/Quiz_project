@@ -8,4 +8,6 @@
     <string name="RadioButtonTopicChoose4">Random</string>
     <string name="start">Start Game</string>
     <string name="Statistic">Statistic</string>
+    <string name="AnswerTrue">True</string>
+    <string name="AnswerFalse">False</string>
 </resources>

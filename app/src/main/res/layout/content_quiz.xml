@@ -101,7 +101,8 @@
         android:id="@+id/answerTrueFalseGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:visibility ="gone">
 
         <RadioButton
             android:id="@+id/radioButtonTrue"
@@ -109,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="RadioButton" />
+            android:text="@string/AnswerTrue" />
 
         <RadioButton
             android:id="@+id/radioButtonFalse"
@@ -117,6 +118,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="RadioButton" />
+            android:text="@string/AnswerFalse" />
     </RadioGroup>
 </LinearLayout>
