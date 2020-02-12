@@ -16,7 +16,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    //private final int ID = 2131230889;
+
     private final String KEY = "Topic";
     private int topic;
     private Button buttonGoToQuiz;
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
 
                 }
-                Log.d("vasa", topic+"");
+
 
                 Intent intent = new Intent(this, QuizActivity.class);
                 intent.putExtra(KEY, topic);
