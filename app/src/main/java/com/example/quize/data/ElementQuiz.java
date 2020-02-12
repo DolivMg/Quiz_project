@@ -14,4 +14,8 @@ public class ElementQuiz {
         this.type=type;
         this.topic=topic;
     }
+
+    public int getId() {
+        return id;
+    }
 }
