@@ -10,4 +10,5 @@
     <string name="Statistic">Statistic</string>
     <string name="AnswerTrue">True</string>
     <string name="AnswerFalse">False</string>
+    <string name="title_activity_actyvity_statistic">Actyvity_statistic</string>
 </resources>

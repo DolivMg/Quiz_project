@@ -183,8 +183,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     + QuizContract.QuestionsEntry.TABLE_NAME
                     + " b ON a."+ QuizContract.AnswersEntry.Q_ID
                     + " = "
-                    + "b."+QuizContract.QuestionsEntry._ID+" ;";
-
+                    + quizList.get(i).getId() +" ;";
+            Log.d("vasa", query);
             cursor = db.rawQuery(query, null);
             try {
                 /**read*/
