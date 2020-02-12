@@ -97,6 +97,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                 }
         }
+        Log.d("vasa", trueAnswersQuiz+"");
         if (checkFinalGame())
         {
             Intent intent = new Intent(this, ResultsActivity.class);
@@ -117,7 +118,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private ElementQuiz choosQuestion()
     {
         Random random = new Random();
-        Log.d("vasa", quizList.size()+"");
+        Log.d("vasa", quizList.size()+"size");
         int chooseElement = random.nextInt(quizList.size());
         return quizList.get(chooseElement);
     }
@@ -209,17 +210,16 @@ private void getAnswerTrueFalse()
 
     if (chooseElement.answerList.get(0).isValid == check)
         trueAnswersQuiz++;
-    answerGrup.setVisibility(View.INVISIBLE);
+    answerGrup.setVisibility(View.GONE);
 }
 
     private void getAnswerString()
     {
-
         EditText answerGrup  = (EditText)  findViewById(R.id.answerString);
         boolean check =  ( answerGrup.getText().equals(chooseElement.answerList.get(0).answer));
         if (chooseElement.answerList.get(0).isValid == check)
             trueAnswersQuiz++;
-        answerGrup.setVisibility(View.INVISIBLE);
+        answerGrup.setVisibility(View.GONE);
     }
 
     private void getAnswerRadioGrup()
@@ -247,14 +247,14 @@ private void getAnswerTrueFalse()
                 check =3;
                 break;
         }
-        answerGrup.setVisibility(View.INVISIBLE);
+        answerGrup.setVisibility(View.GONE);
         if (chooseElement.answerList.get(check).isValid == true)
             trueAnswersQuiz++;
     }
 
     private void getAnswerCheckGrup()
     {
-        RadioGroup answerGrup  = (RadioGroup)  findViewById(R.id.answerRadioGroup);
+        RadioGroup answerGrup  = (RadioGroup)  findViewById(R.id.answerCheckBox);
         int check =0;
 
         CheckBox r1 = (CheckBox) findViewById(R.id.checkButton1);
@@ -262,9 +262,7 @@ private void getAnswerTrueFalse()
         CheckBox r3 = (CheckBox) findViewById(R.id.checkButton3);
         CheckBox r4 = (CheckBox) findViewById(R.id.checkButton4);
 
-
-
-        answerGrup.setVisibility(View.INVISIBLE);
+        answerGrup.setVisibility(View.GONE);
         if (chooseElement.answerList.get(0).isValid == r1.callOnClick()==true)
             trueAnswersQuiz++;
         if (chooseElement.answerList.get(1).isValid == r2.callOnClick()==true)
@@ -274,8 +272,6 @@ private void getAnswerTrueFalse()
         if (chooseElement.answerList.get(3).isValid == r4.callOnClick()==true)
             trueAnswersQuiz++;
     }
-
-
 }//SELECT a._id, a.question , a.topic , a.type , b.answer , c.answer FROM question a INNER JOIN otherAnswer b ,trueAnswer c ON a._id = b.q_id AND a._id = c.q_id;
 
 
